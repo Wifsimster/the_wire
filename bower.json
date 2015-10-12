@@ -1,0 +1,27 @@
+{
+  "name": "The Wire",
+  "version": "0.0.0",
+  "authors": [
+    "Wifsimster <wifsimster@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "index.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "lodash": "~3.10.1",
+    "angular": "~1.4.7"
+  }
+}

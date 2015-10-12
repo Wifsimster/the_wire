@@ -1,0 +1,12 @@
+div.row
+    div.col-lg-2
+        h3 Sidebar
+    div.col-lg-10
+        h1 Overview
+            small &nbsp; - Dashboard
+        hr
+        div(ng-repeat="type in types")
+            h2 {{ type }}
+            div(ng-repeat="device in devices | filter: {type: type}")
+                div
+                    p {{ device.name }} : {{ device.data }}
