@@ -1,7 +1,22 @@
-var path = require('path');
+var request = require('request');
 
 var ip = "192.168.0.21";
 var port = "8087";
+
+// Actions
+var getAllDevices = "/json.htm?type=devices&filter=all&used=true&order=Name";
+var getLightsAndSwitches = "/json.htm?type=devices&filter=light&used=true&order=Name";
+var getDeviceById = "/json.htm?type=devices&rid=IDX";
+var getSunriseAndSunset = "/json.htm?type=command&param=getSunRiseSet";
+var turnLightOff = "/json.htm?type=command&param=switchlight&idx=99&switchcmd=Off";
+var toggleSwitchState = "/json.htm?type=command&param=switchlight&idx=99&switchcmd=Toggle";
+var dimmableLightLevel = "/json.htm?type=command&param=switchlight&idx=99&switchcmd=Set%20Level&level=6";
+var getScenesAndGrous = "/json.htm?type=scenes";
+var turnSceneOrGroup = "/json.htm?type=command&param=switchscene&idx=&switchcmd=";
+
+// Server control
+var shutdownSystem = "/json.htm?type=command&param=system_shutdown";
+var rebootSystem = "/json.htm?type=command&param=system_reboot";
 
 //------------------------------------------
 //----              PAGES               ----
@@ -22,16 +37,7 @@ app.get('/', function (req, res) {
 app.get('/devices', function (req, res) {
     request('http://' + ip + ":" + port + "/json.htm?type=devices&filter=all&used=true&order=Name", {},
         function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var result = JSON.parse(body);
-                console.log(result);
-                if (result.code == 200) {
-                    res.json();
-                } else {
-                    res.json();
-                }
-            } else {
-                res.json();
-            }
+            var result = JSON.parse(body);
+            res.json(result);
         })
 });

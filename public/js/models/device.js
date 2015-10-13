@@ -1,5 +1,4 @@
 function Device(_object) {
-    this.data = _object.Data;
     this.description = _object.Description;
     this.favorite = _object.Favorite;
     this.lastUpdate = _object.LastUpdate;
@@ -12,4 +11,9 @@ function Device(_object) {
     this.xOffset = _object.XOffset;
     this.yOffset = _object.YOffset;
     this.idx = _object.idx;
-}
+    this.data = _object.Data;
+};
+
+Device.prototype.toString = function() {
+    console.log(this.name + " : " + this.data);
+};

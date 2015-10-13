@@ -1,4 +1,4 @@
-var app = angular.module('StarterApp', ['ngRoute']);
+var app = angular.module('StarterApp', ['ngRoute', 'uiSwitch', 'chart.js']);
 
 // App configuration
 app.config(['$routeProvider', '$locationProvider',
@@ -13,21 +13,6 @@ app.config(['$routeProvider', '$locationProvider',
     }]);
 
 // App controller
-app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($scope, $http, $routeParams, $location) {
+app.controller('AppCtrl', ['$scope', '$http', '$route', '$location', function ($scope, $http) {
 
-
-    $http.get(url).then(function(data) {
-        var devices = [];
-        if(_.isObject(data)) {
-            if(_.isObject(data.data)) {
-                if (_.isArray(data.data.result)) {
-                    _.each(data.data.result, function (deviceData) {
-                        devices.push(new Device(deviceData));
-                    });
-                }
-            }
-        }
-        $scope.devices = devices;
-        console.log(devices);
-    });
 }]);
