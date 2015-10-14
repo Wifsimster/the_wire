@@ -52,3 +52,36 @@ app.get('/toggle/:idx', function (req, res) {
             res.json(result);
         });
 });
+
+/**
+ * List all variables
+ */
+app.get('/toggle/:idx', function (req, res) {
+    request('http://' + ip + ":" + port + "/json.htm?type=command&param=getuservariables", {},
+        function (error, response, body) {
+            var result = JSON.parse(body);
+            res.json(result);
+        });
+});
+
+/**
+ * Shutdown Domoticz
+ */
+app.get('/server/shutwdown', function (req, res) {
+    request('http://' + ip + ":" + port + "/json.htm?type=command&param=system_shutdown", {},
+        function (error, response, body) {
+            var result = JSON.parse(body);
+            res.json(result);
+        });
+});
+
+/**
+ * Reboot Domoticz
+ */
+app.get('/server/reboot', function (req, res) {
+    request('http://' + ip + ":" + port + "/json.htm?type=command&param=system_reboot", {},
+        function (error, response, body) {
+            var result = JSON.parse(body);
+            res.json(result);
+        });
+});

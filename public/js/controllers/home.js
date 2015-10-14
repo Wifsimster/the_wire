@@ -101,7 +101,7 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http) {
 
         $scope.change = function (idx) {
             $http.get("/toggle/" + idx).then(function (data) {
-
+                // TODO : Add a toast to notify change
             });
         };
     });
