@@ -59,22 +59,42 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http) {
             }
         }
 
-        var rooms = [];
+        var temperatureRooms = [];
+        var lightingRooms = [];
+        var generalRooms = [];
+
         // Detect and merge data for duplica name
         _.each(temperature, function (device) {
-            rooms.push({name: device.name, devices: _.filter(temperature, {name: device.name})});
+            temperatureRooms.push({name: device.room, devices: _.filter(temperature, {room: device.room})});
         });
 
-        var mergeTemperatureDevices = _.map(_.groupBy(rooms,function(device){
+        // Detect and merge data for duplica name
+        _.each(lighting, function (device) {
+            lightingRooms.push({name: device.room, devices: _.filter(lighting, {room: device.room})});
+        });
+
+        var mergeTemperatureDevices = _.map(_.groupBy(temperatureRooms, function (device) {
             return device.name;
-        }),function(grouped){
+        }), function (grouped) {
             return grouped[0];
         });
+
+        var mergeLightingDevices = _.map(_.groupBy(lightingRooms, function (device) {
+            return device.name;
+        }), function (grouped) {
+            return grouped[0];
+        });
+
+        general = _.sortBy(general, 'room');
+        lighting = _.sortBy(lighting, 'room');
+        temperature = _.sortBy(temperature, 'room');
 
         $scope.general = general;
         $scope.lighting = lighting;
         $scope.temperature = temperature;
+
         $scope.mergeTemperatureDevices = mergeTemperatureDevices;
+        $scope.mergeLightingDevices = mergeLightingDevices;
 
         // Concat all array in devices
         $scope.devices = _(general).concat(lighting, temperature).value();

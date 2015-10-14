@@ -15,50 +15,73 @@ div.row
             small &nbsp; - Dashboard
         hr
 
-        //h2#temperature Temperature
-        //div.row
-        //   div(ng-repeat="room in mergeTemperatureDevices")
-        //       div.col-lg-4(style="height: ;")
-        //           h3 {{ room.name }}
-        //           div(ng-repeat="device in room.devices")
-        //               span(ng-show="device.data.temperature")
-        //                    div(ng-repeat="temperature in device.data.temperature")
-        //                        img(src="/img/temperature.png" alt="temperature" width="35px")
-        //                        span {{ temperature.value }} {{ temperature.unity }}
-        //               span(ng-show="device.data.humidity")
-        //                    div(ng-repeat="humidity in device.data.humidity")
-        //                        img(src="/img/humidity.png" alt="humidity" width="35px")
-        //                        span {{ humidity.value }} {{ humidity.unity }}
-        //               span(ng-show="device.data.pressure")
-        //                    div(ng-repeat="pressure in device.data.pressure")
-        //                        img(src="/img/pressure.png" alt="pressure" width="35px")
-        //                        span {{ pressure.value }} {{ pressure.unity }}
-        //               span(ng-show="device.data.co2")
-        //                    div(ng-repeat="co2 in device.data.co2")
-        //                        img(src="/img/co2.png" alt="co2" width="35px")
-        //                        span {{ co2.value }} {{ co2.unity }}
-        //               span(ng-show="device.data.lux")
-        //                    div(ng-repeat="lux in device.data.lux")
-        //                        img(src="/img/light.png" alt="lux" width="35px")
-        //                        span {{ lux.value }} {{ lux.unity }}
-        //               span(ng-show="device.data.sound")
-        //                    div(ng-repeat="sound in device.data.sound")
-        //                        img(src="/img/speaker_off.png" alt="sound" width="35px")
-        //                        span {{ sound.value }} {{ sound.unity }}
+        h2#temperature Temperature
+        div.row
+           div(ng-repeat="room in mergeTemperatureDevices")
+               div.col-lg-4(style="height: ;")
+                   h3 {{ room.name }}
+                   div(ng-repeat="device in room.devices")
+                       span(ng-show="device.data.temperature")
+                            div(ng-repeat="temperature in device.data.temperature")
+                                img(src="/img/temperature.png" alt="temperature" width="35px")
+                                span {{ temperature.value }} {{ temperature.unity }}
+                       span(ng-show="device.data.humidity")
+                            div(ng-repeat="humidity in device.data.humidity")
+                                img(src="/img/humidity.png" alt="humidity" width="35px")
+                                span {{ humidity.value }} {{ humidity.unity }}
+                       span(ng-show="device.data.pressure")
+                            div(ng-repeat="pressure in device.data.pressure")
+                                img(src="/img/pressure.png" alt="pressure" width="35px")
+                                span {{ pressure.value }} {{ pressure.unity }}
+                       span(ng-show="device.data.co2")
+                            div(ng-repeat="co2 in device.data.co2")
+                                img(src="/img/co2.png" alt="co2" width="35px")
+                                span {{ co2.value }} {{ co2.unity }}
+                       span(ng-show="device.data.lux")
+                            div(ng-repeat="lux in device.data.lux")
+                                img(src="/img/light_on.png" alt="lux" width="35px")
+                                span {{ lux.value }} {{ lux.unity }}
+                       span(ng-show="device.data.sound")
+                            div(ng-repeat="sound in device.data.sound")
+                                img(src="/img/speaker_off.png" alt="sound" width="35px")
+                                span {{ sound.value }} {{ sound.unity }}
 
         h2#lighting Lighting
         div.row
-            div(ng-repeat="device in lighting")
-                div.col-lg-4()
-                    p {{ device.name }} : &nbsp;
-                    span(ng-if="device.typeImg == 'door'")
-                        img(src="/img/speaker_off.png" alt="sound" width="35px")
-                    span(ng-if="device.typeImg == 'lightbulb'")
-                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data")
-                    span(ng-if="device.typeImg == 'motion'")
-                        img(src="/img/motion_on.png" alt="sound" width="35px")
-                    span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
-                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
+            div(ng-repeat="room in mergeLightingDevices")
+                div.col-lg-4(style="height: ;")
+                    h3 {{ room.name }}
+                    div(ng-repeat="device in room.devices")
+                        p {{ device.name }}
+                        span(ng-if="device.typeImg == 'door'")
+                            span(ng-if="device.open")
+                                switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
+                            span(ng-if="!device.open")
+                                switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
+
+                        span(ng-if="device.typeImg == 'lightbulb'")
+                            span(ng-if="device.protected")
+                                switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.status")
+                            span(ng-if="!device.protected")
+                                switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data")
+
+                        span(ng-if="device.typeImg == 'motion'")
+                            span(ng-if="device.data")
+                                img(src="/img/motion_on.png" alt="motion_on" title="Motion" width="35px")
+                            span(ng-if="!device.data")
+                                img(src="/img/motion_off.png" alt="motion_off" title="No motion" width="35px")
+
+                        span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
+                            switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
+                            //p.
+                        //    {{ device.batteryLevel }}
+                        //    {{ device.hardwareType }}
+                        //    {{ device.haveTimeout }}
+                        //    {{ device.id }}
+                        //    {{ device.idx }}
+                        //    {{ device.lastUpdate }}
+                        //    {{ device.signalLevel }}
+                        //    {{ device.signalLevel }}
 
         h2#general General
         div.row
