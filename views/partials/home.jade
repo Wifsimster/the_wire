@@ -63,7 +63,7 @@ div.row
                             span(ng-if="device.protected")
                                 switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.status")
                             span(ng-if="!device.protected")
-                                switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data")
+                                switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
 
                         span(ng-if="device.typeImg == 'motion'")
                             span(ng-if="device.data")

@@ -99,6 +99,10 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http) {
         // Concat all array in devices
         $scope.devices = _(general).concat(lighting, temperature).value();
 
-        console.log($scope.lighting);
+        $scope.change = function (idx) {
+            $http.get("/toggle/" + idx).then(function (data) {
+
+            });
+        };
     });
 });

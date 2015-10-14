@@ -41,3 +41,14 @@ app.get('/devices', function (req, res) {
             res.json(result);
         })
 });
+
+/**
+ * Toggle a switch light by idx
+ */
+app.get('/toggle/:idx', function (req, res) {
+    request('http://' + ip + ":" + port + "/json.htm?type=command&param=switchlight&idx=" + req.params.idx + "&switchcmd=Toggle", {},
+        function (error, response, body) {
+            var result = JSON.parse(body);
+            res.json(result);
+        });
+});
