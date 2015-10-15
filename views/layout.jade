@@ -1,14 +1,28 @@
 doctype
 html(lang="en", ng-app="StarterApp")
     head
-        meta(name='viewport', content='width=device-width', initial-scale='1')
-
         title #{title}
 
-        link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
-        link(rel='stylesheet', href="/bower_components/angular-ui-switch/angular-ui-switch.min.css")
-        link(rel="stylesheet", href="bower_components/angular-chart.js/dist/angular-chart.css")
-        link(rel='stylesheet', href='/stylesheets/style.css')
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible" content="IE=edge")
+        meta(name="description" content="")
+        meta(name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no")
+
+        link(rel="stylesheet" href="/bower_components/angular-material/angular-material.min.css")
+        link(rel='stylesheet' href="/bower_components/angular-ui-switch/angular-ui-switch.min.css")
+        link(rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css")
+        link(rel='stylesheet' href='/stylesheets/style.css')
+
+        style(type="text/css").
+            /**
+            * Hide when Angular is not yet loaded and initialized
+            */
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+                display: none !important;
+            }
+    body(layout="row", ng-cloak)
+        md-content
+            div(ng-view)
 
         script(src="/bower_components/jquery/dist/jquery.min.js")
         script(src="/bower_components/lodash/lodash.min.js")
@@ -19,6 +33,7 @@ html(lang="en", ng-app="StarterApp")
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-animate.min.js")
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular-aria.min.js")
         script(src="/bower_components/angular-ui-switch/angular-ui-switch.min.js")
+        script(src="/bower_components/angular-material/angular-material.min.js")
         script(src="/bower_components/Chart.js/Chart.min.js")
         script(src="/bower_components/angular-chart.js/dist/angular-chart.js")
 
@@ -39,5 +54,3 @@ html(lang="en", ng-app="StarterApp")
         script(src="/js/models/temperature/lux.js")
         script(src="/js/models/temperature/sound_level.js")
         script(src="/js/models/temperature/temperature.js")
-    body(ng-controller="AppCtrl")
-        div.container(ng-view)

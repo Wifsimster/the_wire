@@ -1,97 +1,76 @@
-div.row
-    div.col-lg-2
-        h3 Sidebar
-        ul
-            li
-                a(ng-href="#temperature") Temperature
-            li
-                a(ng-href="#general") General
-            li
-                a(ng-href="#lighting") Lighting
-            li
-                a(ng-href="#cameras") Cameras
-    div.col-lg-10
-        h1 Overview
-            small &nbsp; - Dashboard
-        hr
+div(ng-cloak)
+    md-content
+        md-tabs(md-dynamic-height, md-center-tabs, md-swipe-content)
+            md-tab(label="temperature")
+                md-content.md-padding
+                    h1.md-display-2 Temperature
+                       div(layout="row" ng-repeat="room in mergeTemperatureDevices")
+                           .md-title {{ room.name }}
+                           div.md-body-1(style="padding: 20px; width: 100px;" ng-repeat="device in room.devices")
+                               span(ng-show="device.data.temperature")
+                                    div(ng-repeat="temperature in device.data.temperature")
+                                        img(src="/img/temperature.png" alt="temperature" width="35px")
+                                        span {{ temperature.value }} {{ temperature.unity }}
+                               span(ng-show="device.data.humidity")
+                                    div(ng-repeat="humidity in device.data.humidity")
+                                        img(src="/img/humidity.png" alt="humidity" width="35px")
+                                        span {{ humidity.value }} {{ humidity.unity }}
+                               span(ng-show="device.data.pressure")
+                                    div(ng-repeat="pressure in device.data.pressure")
+                                        img(src="/img/pressure.png" alt="pressure" width="35px")
+                                        span {{ pressure.value }} {{ pressure.unity }}
+                               span(ng-show="device.data.co2")
+                                    div(ng-repeat="co2 in device.data.co2")
+                                        img(src="/img/co2.png" alt="co2" width="35px")
+                                        span {{ co2.value }} {{ co2.unity }}
+                               span(ng-show="device.data.lux")
+                                    div(ng-repeat="lux in device.data.lux")
+                                        img(src="/img/light_on.png" alt="lux" width="35px")
+                                        span {{ lux.value }} {{ lux.unity }}
+                               span(ng-show="device.data.sound")
+                                    div(ng-repeat="sound in device.data.sound")
+                                        img(src="/img/speaker_off.png" alt="sound" width="35px")
+                                        span {{ sound.value }} {{ sound.unity }}
+            md-tab(label="lighting")
+                md-content.md-padding
+                    h1.md-display-2 Lighting
+                       div(layout="row" layout-wrap ng-repeat="room in mergeLightingDevices")
+                           .md-title {{ room.name }}
+                           div.md-body-1(style="padding: 20px; width: 75px;" ng-repeat="device in room.devices")
+                                   p {{ device.name }}
+                                   span(ng-if="device.typeImg == 'door'")
+                                       span(ng-if="device.open")
+                                           switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
+                                       span(ng-if="!device.open")
+                                           switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
 
-        h2#temperature Temperature
-        div.row
-           div(ng-repeat="room in mergeTemperatureDevices")
-               div.col-lg-4(style="height: ;")
-                   h3 {{ room.name }}
-                   div(ng-repeat="device in room.devices")
-                       span(ng-show="device.data.temperature")
-                            div(ng-repeat="temperature in device.data.temperature")
-                                img(src="/img/temperature.png" alt="temperature" width="35px")
-                                span {{ temperature.value }} {{ temperature.unity }}
-                       span(ng-show="device.data.humidity")
-                            div(ng-repeat="humidity in device.data.humidity")
-                                img(src="/img/humidity.png" alt="humidity" width="35px")
-                                span {{ humidity.value }} {{ humidity.unity }}
-                       span(ng-show="device.data.pressure")
-                            div(ng-repeat="pressure in device.data.pressure")
-                                img(src="/img/pressure.png" alt="pressure" width="35px")
-                                span {{ pressure.value }} {{ pressure.unity }}
-                       span(ng-show="device.data.co2")
-                            div(ng-repeat="co2 in device.data.co2")
-                                img(src="/img/co2.png" alt="co2" width="35px")
-                                span {{ co2.value }} {{ co2.unity }}
-                       span(ng-show="device.data.lux")
-                            div(ng-repeat="lux in device.data.lux")
-                                img(src="/img/light_on.png" alt="lux" width="35px")
-                                span {{ lux.value }} {{ lux.unity }}
-                       span(ng-show="device.data.sound")
-                            div(ng-repeat="sound in device.data.sound")
-                                img(src="/img/speaker_off.png" alt="sound" width="35px")
-                                span {{ sound.value }} {{ sound.unity }}
+                                   span(ng-if="device.typeImg == 'lightbulb'")
+                                       span(ng-if="device.protected")
+                                           switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.status")
+                                       span(ng-if="!device.protected")
+                                           switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
 
-        h2#lighting Lighting
-        div.row
-            div(ng-repeat="room in mergeLightingDevices")
-                div.col-lg-4(style="height: ;")
-                    h3 {{ room.name }}
-                    div(ng-repeat="device in room.devices")
-                        p {{ device.name }}
-                        span(ng-if="device.typeImg == 'door'")
-                            span(ng-if="device.open")
-                                switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
-                            span(ng-if="!device.open")
-                                switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
+                                   span(ng-if="device.typeImg == 'motion'")
+                                       span(ng-if="device.data")
+                                           img(src="/img/motion_on.png" alt="motion_on" title="Motion" width="35px")
+                                       span(ng-if="!device.data")
+                                           img(src="/img/motion_off.png" alt="motion_off" title="No motion" width="35px")
 
-                        span(ng-if="device.typeImg == 'lightbulb'")
-                            span(ng-if="device.protected")
-                                switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.status")
-                            span(ng-if="!device.protected")
-                                switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
-
-                        span(ng-if="device.typeImg == 'motion'")
-                            span(ng-if="device.data")
-                                img(src="/img/motion_on.png" alt="motion_on" title="Motion" width="35px")
-                            span(ng-if="!device.data")
-                                img(src="/img/motion_off.png" alt="motion_off" title="No motion" width="35px")
-
-                        span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
-                            switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
-                            //p.
-                        //    {{ device.batteryLevel }}
-                        //    {{ device.hardwareType }}
-                        //    {{ device.haveTimeout }}
-                        //    {{ device.id }}
-                        //    {{ device.idx }}
-                        //    {{ device.lastUpdate }}
-                        //    {{ device.signalLevel }}
-                        //    {{ device.signalLevel }}
-
-        h2#general General
-        div.row
-            div(ng-repeat="device in general")
-                div.col-lg-4()
-                    p {{ device.name }} : &nbsp;
-                        strong {{ device.value }}{{ device.unity }}
-                    div(style="height:250px;width:250px")
-                        canvas.chart.chart-doughnut(id='{{device.idx}}',chart-legend=true, chart-data='device.data', chart-labels='device.labels')
-
-        h2#cameras Cameras
-        div.camera
-            img(src="http://192.168.0.31:8081", style="width:275px;")
+                                   span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
+                                       switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
+            md-tab(label="general")
+                md-content.md-padding
+                    h1.md-display-2 General
+                        div(layout="row")
+                            div.md-body-1(ng-repeat="device in general")
+                                div(flex)
+                                    p {{ device.name }} : &nbsp;
+                                        strong {{ device.value }}{{ device.unity }}
+                                    div(style="height:250px;width:250px")
+                                        canvas.chart.chart-doughnut(id='{{device.idx}}',chart-legend=true, chart-data='device.data', chart-labels='device.labels')
+            md-tab(label="cameras")
+                md-content.md-padding
+                    h1.md-display-2 Cameras
+                        div.md-body-1(layout="row")
+                            div(flex)
+                                img(src="http://192.168.0.31:8081", style="width:275px;")

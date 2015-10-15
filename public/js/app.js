@@ -1,4 +1,14 @@
-var app = angular.module('StarterApp', ['ngRoute', 'uiSwitch', 'chart.js']);
+var app = angular.module('StarterApp', ['ngRoute', 'uiSwitch', 'chart.js', 'ngMaterial']);
+
+app.config(function ($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('indigo')
+        .accentPalette('pink')
+        .warnPalette('blue')
+        .backgroundPalette('grey', {
+            'default': '900'
+        });
+});
 
 // App configuration
 app.config(['$routeProvider', '$locationProvider',
