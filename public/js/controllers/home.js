@@ -1,4 +1,4 @@
-app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout) {
+app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToast) {
 
     // Domoticz current types
     $rootScope.types = Types();
@@ -62,6 +62,7 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout) {
                         $http.get("/toggle/" + idx).then(function (data) {
                             $scope.parseData();
                             // TODO : Add a toast to notify change
+                            $mdToast.show($mdToast.simple().content("Action send !").position("bottom right"));
                         });
                     };
                 }
