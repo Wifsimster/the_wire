@@ -22,3 +22,5 @@ function Device(_object) {
 Device.prototype.toString = function () {
     console.log(this.name + " : " + this.data);
 };
+
+module.exports = Device;

@@ -1,10 +1,10 @@
-function Motion(_object) {
+var Device = require('../../models/device');
 
+function Door(_object) {
     // Super
     Device.call(this, _object);
 
-    this.data === "On" ? this.data = true : this.data;
-    this.data === "Off" ? this.data = false : this.data;
+    this.data === "Closed" ? this.open = false : this.open = true;;
 
     this.addjMulti = _object.AddjMulti;
     this.addjMulti2 = _object.AddjMulti2;
@@ -21,9 +21,10 @@ function Motion(_object) {
     this.haveTimeout = _object.HaveTimeout;
     this.id = _object.ID;
     this.image = _object.Image;
+    this.internalState = _object.InternalState;
+    this.isSubDevice = _object.IsSubDevice;
     this.level = _object.Level;
     this.levelInt = _object.LevelInt;
-    this.isSubDevice = _object.IsSubDevice;
     this.maxDimLevel = _object.MaxDimLevel;
     this.planId = _object.PlanID;
     this.planIds = _object.PlanIDs;
@@ -39,6 +40,8 @@ function Motion(_object) {
     this.used = _object.Used;
 }
 
-Door.prototype.isMotion = function () {
-    return this.data;
+Door.prototype.isOpen = function () {
+    return this.open;
 };
+
+module.exports = Door;

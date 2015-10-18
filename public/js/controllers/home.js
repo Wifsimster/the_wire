@@ -5,114 +5,74 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout) {
 
     $scope.parseData = function () {
         $http.get("/devices").then(function (data) {
-            var general = [];
-            var lighting = [];
-            var temperature = [];
+
             if (_.isObject(data)) {
-                if (_.isObject(data.data)) {
-                    if (_.isArray(data.data.result)) {
-                        // Each Domoticz devices
-                        _.each(data.data.result, function (deviceData) {
+                if (data.status === 200) {
+                    var sensors = data.data.sensors;
+                    var actuators = data.data.actuators;
+                    var generals = data.data.generals;
 
-                            if (deviceData.TypeImg === "current") {
-                                general.push(new Current(deviceData));
-                            }
+                    console.log(sensors);
 
-                            if (deviceData.TypeImg === "hardware") {
-                                general.push(new Hardware(deviceData));
-                            }
+                    var sensorRooms = [];
+                    var actuatorRooms = [];
+                    var generalRooms = [];
 
-                            // Lighting devices
-                            if (deviceData.TypeImg === "door") {
-                                lighting.push(new Door(deviceData));
-                            }
+                    // Detect and merge data for duplica name
+                    _.each(sensors, function (device) {
+                        sensorRooms.push({name: device.room, devices: _.filter(sensors, {room: device.room})});
+                    });
+                    _.each(actuators, function (device) {
+                        actuatorRooms.push({name: device.room, devices: _.filter(actuators, {room: device.room})});
+                    });
+                    _.each(generals, function (device) {
+                        generalRooms.push({name: device.room, devices: _.filter(generals, {room: device.room})});
+                    });
 
-                            if (deviceData.TypeImg === "lightbulb") {
-                                lighting.push(new Lightbulb(deviceData));
-                            }
+                    var mergeSensorDevices = _.map(_.groupBy(sensorRooms, function (device) {
+                        return device.name;
+                    }), function (grouped) {
+                        return grouped[0];
+                    });
+                    var mergeActuatorDevices = _.map(_.groupBy(actuatorRooms, function (device) {
+                        return device.name;
+                    }), function (grouped) {
+                        return grouped[0];
+                    });
+                    var mergeGeneralDevices = _.map(_.groupBy(generalRooms, function (device) {
+                        return device.name;
+                    }), function (grouped) {
+                        return grouped[0];
+                    });
 
-                            if (deviceData.TypeImg === "motion") {
-                                lighting.push(new Motion(deviceData));
-                            }
+                    // Expose arrays to $scope
+                    $scope.mergeSensorDevices = mergeSensorDevices;
+                    $scope.mergeActuatorDevices = mergeActuatorDevices;
+                    $scope.mergeGeneralDevices = mergeGeneralDevices;
 
-                            if (deviceData.TypeImg === "push") {
-                                lighting.push(new Push(deviceData));
-                            }
+                    //$scope.general = _.sortBy(general, 'room');
+                    //$scope.actuators = _.sortBy(actuators, 'room');
+                    //$scope.sensors = _.sortBy(sensors, 'room');
 
-                            // Temperature devices
-                            if (deviceData.TypeImg === "air") {
-                                temperature.push(new AirQuality(deviceData));
-                            }
+                    //// Concat all array in devices
+                    //$scope.devices = _(general).concat(actuators, sensors).value();
 
-                            if (deviceData.TypeImg === "lux") {
-                                temperature.push(new Lux(deviceData));
-                            }
-
-                            if (deviceData.TypeImg === "Speaker") {
-                                temperature.push(new SoundLevel(deviceData));
-                            }
-
-                            if (deviceData.TypeImg === "temperature") {
-                                temperature.push(new Temperature(deviceData));
-                            }
+                    $scope.change = function (idx) {
+                        $http.get("/toggle/" + idx).then(function (data) {
+                            $scope.parseData();
+                            // TODO : Add a toast to notify change
                         });
-                    }
+                    };
                 }
             }
-
-            var temperatureRooms = [];
-            var lightingRooms = [];
-            var generalRooms = [];
-
-            // Detect and merge data for duplica name
-            _.each(temperature, function (device) {
-                temperatureRooms.push({name: device.room, devices: _.filter(temperature, {room: device.room})});
-            });
-
-            // Detect and merge data for duplica name
-            _.each(lighting, function (device) {
-                lightingRooms.push({name: device.room, devices: _.filter(lighting, {room: device.room})});
-            });
-
-            var mergeTemperatureDevices = _.map(_.groupBy(temperatureRooms, function (device) {
-                return device.name;
-            }), function (grouped) {
-                return grouped[0];
-            });
-
-            var mergeLightingDevices = _.map(_.groupBy(lightingRooms, function (device) {
-                return device.name;
-            }), function (grouped) {
-                return grouped[0];
-            });
-
-            general = _.sortBy(general, 'room');
-            lighting = _.sortBy(lighting, 'room');
-            temperature = _.sortBy(temperature, 'room');
-
-            $scope.general = general;
-            $scope.lighting = lighting;
-            $scope.temperature = temperature;
-
-            $scope.mergeTemperatureDevices = mergeTemperatureDevices;
-            $scope.mergeLightingDevices = mergeLightingDevices;
-
-            // Concat all array in devices
-            $scope.devices = _(general).concat(lighting, temperature).value();
-
-            $scope.change = function (idx) {
-                $http.get("/toggle/" + idx).then(function (data) {
-                    // TODO : Add a toast to notify change
-                });
-            };
         });
     };
 
     $scope.parseData();
 
     // Function to replicate setInterval using $timeout service.
-    $scope.intervalFunction = function(){
-        $timeout(function() {
+    $scope.intervalFunction = function () {
+        $timeout(function () {
             $scope.parseData();
             $scope.intervalFunction();
         }, 15000)

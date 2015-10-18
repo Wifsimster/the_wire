@@ -1,5 +1,7 @@
 var request = require('request');
 
+var Wire = require('../utils/wire');
+
 var ip = "192.168.0.21";
 var port = "8087";
 
@@ -38,7 +40,7 @@ app.get('/devices', function (req, res) {
     request('http://' + ip + ":" + port + "/json.htm?type=devices&filter=all&used=true&order=Name", {},
         function (error, response, body) {
             var result = JSON.parse(body);
-            res.json(result);
+            res.json(Wire.parseData(result));
         })
 });
 

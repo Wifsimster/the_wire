@@ -1,10 +1,10 @@
 div(ng-cloak)
     md-content
         md-tabs(md-dynamic-height, md-center-tabs, md-swipe-content)
-            md-tab(label="temperature")
+            md-tab(label="sensors")
                 md-content.md-padding
-                    h1.md-display-2 Temperature
-                       div(layout="row" ng-repeat="room in mergeTemperatureDevices")
+                    h1.md-display-2 Sensors
+                       div(layout="row" ng-repeat="room in mergeSensorDevices")
                            .md-title {{ room.name }}
                            div.md-body-1(style="padding: 20px; width: 100px;" ng-repeat="device in room.devices")
                                span(ng-show="device.data.temperature")
@@ -31,10 +31,10 @@ div(ng-cloak)
                                     div(ng-repeat="sound in device.data.sound")
                                         img(src="/img/speaker_off.png" alt="sound" width="35px")
                                         span {{ sound.value }} {{ sound.unity }}
-            md-tab(label="lighting")
+            md-tab(label="actuators")
                 md-content.md-padding
-                    h1.md-display-2 Lighting
-                       div(layout="row" layout-wrap ng-repeat="room in mergeLightingDevices")
+                    h1.md-display-2 Actuators
+                       div(layout="row" layout-wrap ng-repeat="room in mergeActuatorDevices")
                            .md-title {{ room.name }}
                            div.md-body-1(style="padding: 20px; width: 75px;" ng-repeat="device in room.devices")
                                    p {{ device.name }}
@@ -58,13 +58,16 @@ div(ng-cloak)
 
                                    span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
                                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
+
+                                   small {{device.lastUpdate}}
             md-tab(label="general")
                 md-content.md-padding
                     h1.md-display-2 General
                         div(layout="row")
-                            div.md-body-1(ng-repeat="device in general")
-                                div(flex)
-                                    p {{ device.name }} : &nbsp;
+                            div.md-body-1(ng-repeat="room in mergeGeneralDevices")
+                                .md-title {{ room.name }}
+                                div.md-body-1(style="padding: 20px; width: 150px;" ng-repeat="device in room.devices")
+                                    p {{ device.name }}
                                         strong {{ device.value }}{{ device.unity }}
                                     div(style="height:250px;width:250px")
                                         canvas.chart.chart-doughnut(id='{{device.idx}}',chart-legend=true, chart-data='device.data', chart-labels='device.labels')

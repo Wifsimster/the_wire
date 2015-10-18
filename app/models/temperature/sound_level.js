@@ -1,8 +1,12 @@
+var Device = require('../../models/device');
+
 function SoundLevel(_object) {
+    var Wire = require('../../utils/wire');
+
     // Super
     Device.call(this, _object);
 
-    if (_.endsWith(this.data, 'dB')) {
+    if (Wire.endsWith(this.data, 'dB')) {
         var sound = {};
         sound.value = parseFloat(this.data.substring(0, this.data.length - 2));
         sound.unity = "dB";
@@ -12,3 +16,5 @@ function SoundLevel(_object) {
         this.data.sound.push(sound);
     }
 }
+
+module.exports = SoundLevel;

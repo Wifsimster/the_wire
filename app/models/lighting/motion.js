@@ -1,11 +1,12 @@
-function Lightbulb(_object) {
+var Device = require('../../models/device');
+
+function Motion(_object) {
+
     // Super
     Device.call(this, _object);
 
-    // For switch component
     this.data === "On" ? this.data = true : this.data;
     this.data === "Off" ? this.data = false : this.data;
-    this.data === "Off, Level: 255 %" ? this.data = false : this.data;
 
     this.addjMulti = _object.AddjMulti;
     this.addjMulti2 = _object.AddjMulti2;
@@ -22,6 +23,8 @@ function Lightbulb(_object) {
     this.haveTimeout = _object.HaveTimeout;
     this.id = _object.ID;
     this.image = _object.Image;
+    this.level = _object.Level;
+    this.levelInt = _object.LevelInt;
     this.isSubDevice = _object.IsSubDevice;
     this.maxDimLevel = _object.MaxDimLevel;
     this.planId = _object.PlanID;
@@ -38,6 +41,8 @@ function Lightbulb(_object) {
     this.used = _object.Used;
 }
 
-Door.prototype.isOpen = function () {
-    return this.open;
+Motion.prototype.isMotion = function () {
+    return this.data;
 };
+
+module.exports = Motion;

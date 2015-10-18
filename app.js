@@ -17,7 +17,7 @@ app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-// Declare routes to use
+// Routes
 require('./app/routes/generic.js');
 
 // Start the server
