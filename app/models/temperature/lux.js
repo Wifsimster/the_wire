@@ -11,8 +11,7 @@ function Lux(_object) {
         lux.unity = "lx";
 
         this.data = [];
-        this.data.lux = [];
-        this.data.lux.push(lux);
+        this.data.push(lux);
     }
 }
 

@@ -12,8 +12,7 @@ function AirQuality(_object) {
         co2.unity = "ppm";
 
         this.data = [];
-        this.data.co2 = [];
-        this.data.co2.push(co2);
+        this.data.push(co2);
     }
 }
 

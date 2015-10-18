@@ -38,11 +38,11 @@ Wire.parseData = function (data) {
         if (deviceData.TypeImg === "push") {
             actuators.push(new Push(deviceData));
         }
+        if (deviceData.TypeImg === "motion") {
+            actuators.push(new Motion(deviceData));
+        }
 
         // Sensor devices
-        if (deviceData.TypeImg === "motion") {
-            sensors.push(new Motion(deviceData));
-        }
         if (deviceData.TypeImg === "air") {
             sensors.push(new AirQuality(deviceData));
         }
@@ -56,7 +56,7 @@ Wire.parseData = function (data) {
             sensors.push(new Temperature(deviceData));
         }
     });
-    return {'sensors': sensors, 'actuators': actuators, 'generals': generals};
+    return {sensors: sensors, actuators: actuators, generals: generals};
 };
 
 Wire.endsWith = function (str, suffix) {

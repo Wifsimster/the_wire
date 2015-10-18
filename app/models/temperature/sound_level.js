@@ -12,8 +12,7 @@ function SoundLevel(_object) {
         sound.unity = "dB";
 
         this.data = [];
-        this.data.sound = [];
-        this.data.sound.push(sound);
+        this.data.push(sound);
     }
 }
 

@@ -36,32 +36,34 @@ div(ng-cloak)
                 md-content.md-padding
                     h1.md-display-2 Sensors
                         div(layout="row" ng-repeat="room in mergeSensorDevices")
-                            .md-title {{ room.name }}
-                            div.md-body-1(style="padding: 20px; width: 100px;" ng-repeat="device in room.devices")
-                                span(ng-show="device.data.temperature")
-                                    div(ng-repeat="temperature in device.data.temperature")
-                                        img(src="/img/temperature.png" alt="temperature" width="35px")
-                                        span {{ temperature.value }} {{ temperature.unity }}
-                                span(ng-show="device.data.humidity")
-                                    div(ng-repeat="humidity in device.data.humidity")
-                                        img(src="/img/humidity.png" alt="humidity" width="35px")
-                                        span {{ humidity.value }} {{ humidity.unity }}
-                                span(ng-show="device.data.pressure")
-                                    div(ng-repeat="pressure in device.data.pressure")
-                                        img(src="/img/pressure.png" alt="pressure" width="35px")
-                                        span {{ pressure.value }} {{ pressure.unity }}
-                                span(ng-show="device.data.co2")
-                                    div(ng-repeat="co2 in device.data.co2")
-                                        img(src="/img/co2.png" alt="co2" width="35px")
-                                        span {{ co2.value }} {{ co2.unity }}
-                                span(ng-show="device.data.lux")
-                                    div(ng-repeat="lux in device.data.lux")
-                                        img(src="/img/light_on.png" alt="lux" width="35px")
-                                        span {{ lux.value }} {{ lux.unity }}
-                                span(ng-show="device.data.sound")
-                                    div(ng-repeat="sound in device.data.sound")
-                                        img(src="/img/speaker_off.png" alt="sound" width="35px")
-                                        span {{ sound.value }} {{ sound.unity }}
+                            .md-title(flex="5") {{ room.name }}
+                            div(layout="row" ng-repeat="device in room.devices")
+                                div.md-body-1(ng-repeat="value in device.data")
+                                    md-card(ng-if="value.unity == 'C'")
+                                        img(src="/img/temperature.png" alt="temperature" style="padding: 20px; width: 75px;")
+                                        md-card-content
+                                            span {{ value.value }} {{ value.unity }}
+                                    md-card(ng-if="value.unity == '%'")
+                                        img(src="/img/humidity.png" alt="humidity" style="padding: 20px; width: 75px;")
+                                        md-card-content
+                                            span {{ value.value }} {{ value.unity }}
+                                    md-card(ng-if="value.unity == 'hPa'")
+                                        img(src="/img/pressure.png" alt="pressure" style="padding: 20px; width: 75px;")
+                                        md-card-content
+                                            span {{ value.value }} {{ value.unity }}
+                                    md-card(ng-if="value.unity == 'ppm'")
+                                        img(src="/img/co2.png" alt="co2" style="padding: 20px; width: 75px;")
+                                        md-card-content
+                                            span {{ value.value }} {{ value.unity }}
+                                    md-card(ng-if="value.unity == 'lx'")
+                                        img(src="/img/light_on.png" alt="lux" style="padding: 20px; width: 75px;")
+                                        md-card-content
+                                            span {{ value.value }} {{ value.unity }}
+                                    md-card(ng-if="value.unity == 'dB'")
+                                        img(src="/img/speaker_off.png" alt="sound" style="padding: 20px; width: 75px;")
+                                        md-card-content
+                                            span {{ value.value }} {{ value.unity }}
+
             md-tab(label="general")
                 md-content.md-padding
                     h1.md-display-2 General

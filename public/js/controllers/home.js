@@ -13,8 +13,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout) {
                     var actuators = data.data.actuators;
                     var generals = data.data.generals;
 
-                    console.log(sensors);
-
                     var sensorRooms = [];
                     var actuatorRooms = [];
                     var generalRooms = [];
@@ -51,6 +49,8 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout) {
                     $scope.mergeActuatorDevices = mergeActuatorDevices;
                     $scope.mergeGeneralDevices = mergeGeneralDevices;
 
+                    console.log(mergeSensorDevices)
+
                     //$scope.general = _.sortBy(general, 'room');
                     //$scope.actuators = _.sortBy(actuators, 'room');
                     //$scope.sensors = _.sortBy(sensors, 'room');
@@ -80,5 +80,5 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout) {
     };
 
     // Kick off the interval
-    $scope.intervalFunction();
+    //$scope.intervalFunction();
 });
