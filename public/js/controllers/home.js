@@ -2,6 +2,7 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout) {
 
     // Domoticz current types
     $rootScope.types = Types();
+    $rootScope.advancedSettings = false;
 
     $scope.parseData = function () {
         $http.get("/devices").then(function (data) {
