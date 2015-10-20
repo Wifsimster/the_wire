@@ -40,8 +40,18 @@ app.get('/devices', function (req, res) {
     request('http://' + ip + ":" + port + "/json.htm?type=devices&filter=all&used=true&order=Name", {},
         function (error, response, body) {
             var result = JSON.parse(body);
-            res.json(Wire.parseData(result));
-        })
+            var wire = new Wire(result);
+            res.json(wire.getDevices(result));
+        });
+});
+
+app.get('/complete/actuators', function (req, res) {
+    request('http://' + ip + ":" + port + "/json.htm?type=devices&filter=all&used=true&order=Name", {},
+        function (error, response, body) {
+            var result = JSON.parse(body);
+            var wire = new Wire(result);
+            res.json(wire.getOpenZWaveDevicesByNode());
+        });
 });
 
 /**

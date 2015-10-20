@@ -4,7 +4,18 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
     $rootScope.types = Types();
     $rootScope.advancedSettings = false;
 
-    $scope.parseData = function () {
+    $scope.getDevices = function () {
+
+        $http.get("/complete/actuators").then(function (data) {
+            if (_.isObject(data)) {
+                if (data.status === 200) {
+                    $scope.actuatorsByNode = data.data;
+
+                    console.log(data.data);
+                }
+            }
+        });
+
         $http.get("/devices").then(function (data) {
 
             if (_.isObject(data)) {
@@ -70,7 +81,7 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
         });
     };
 
-    $scope.parseData();
+    $scope.getDevices();
 
     // Function to replicate setInterval using $timeout service.
     $scope.intervalFunction = function () {

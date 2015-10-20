@@ -9,58 +9,110 @@ var Lux = require('../models/temperature/lux.js');
 var SoundLevel = require('../models/temperature/sound_level.js');
 var Temperature = require('../models/temperature/temperature.js');
 
-function Wire() {
+function Wire(data) {
+    var self = this;
+    this.actuators = [];
+    this.sensors = [];
+    this.generals = [];
 
-}
-
-Wire.parseData = function (data) {
-    var generals = [];
-    var actuators = [];
-    var sensors = [];
     // Each Domoticz devices
     data.result.forEach(function (deviceData) {
-
         // General devices
         if (deviceData.TypeImg === "current") {
-            generals.push(new Current(deviceData));
+            self.generals.push(new Current(deviceData));
         }
         if (deviceData.TypeImg === "hardware") {
-            generals.push(new Hardware(deviceData));
+            self.generals.push(new Hardware(deviceData));
         }
 
         // Actuator devices
-        if (deviceData.TypeImg === "door") {
-            actuators.push(new Door(deviceData));
-        }
         if (deviceData.TypeImg === "lightbulb") {
-            actuators.push(new Lightbulb(deviceData));
+            self.actuators.push(new Lightbulb(deviceData));
         }
         if (deviceData.TypeImg === "push") {
-            actuators.push(new Push(deviceData));
-        }
-        if (deviceData.TypeImg === "motion") {
-            actuators.push(new Motion(deviceData));
+            self.actuators.push(new Push(deviceData));
         }
 
         // Sensor devices
+        if (deviceData.TypeImg === "door") {
+            self.sensors.push(new Door(deviceData));
+        }
+        if (deviceData.TypeImg === "motion") {
+            self.sensors.push(new Motion(deviceData));
+        }
         if (deviceData.TypeImg === "air") {
-            sensors.push(new AirQuality(deviceData));
+            self.sensors.push(new AirQuality(deviceData));
         }
         if (deviceData.TypeImg === "lux") {
-            sensors.push(new Lux(deviceData));
+            self.sensors.push(new Lux(deviceData));
         }
         if (deviceData.TypeImg === "Speaker") {
-            sensors.push(new SoundLevel(deviceData));
+            self.sensors.push(new SoundLevel(deviceData));
         }
         if (deviceData.TypeImg === "temperature") {
-            sensors.push(new Temperature(deviceData));
+            self.sensors.push(new Temperature(deviceData));
         }
     });
-    return {sensors: sensors, actuators: actuators, generals: generals};
 };
+
+Wire.prototype.getDevices = function () {
+    return {sensors: this.sensors, actuators: this.actuators, generals: this.generals};
+};
+
+Wire.prototype._getDevices = function () {
+    return this.sensors.concat(this.actuators.concat(this.generals));
+};
+
+/**
+ * Return an array of nodeIDs for OpenZWave device
+ */
+Wire.prototype.getNodeIDs = function () {
+    var nodeIds = [];
+    var devices = this._getDevices();
+    devices.forEach(function (device) {
+        if (device.subType === "ZWave") {
+            nodeIds.push(device.id.substring(0, 5));
+        }
+    });
+    return Wire._filter(nodeIds);
+};
+
+Wire.prototype.getOpenZWaveDevicesByNode = function () {
+    var self = this;
+    var nodeIds = this.getNodeIDs();
+    var nodes = [];
+
+    nodeIds.forEach(function (nodeId) {
+        var devices = [];
+        self._getDevices().forEach(function (device) {
+            if (device.subType === "ZWave") {
+                if (device.id.toString().startsWith(nodeId.toString())) {
+                    devices.push(device);
+                }
+            }
+        });
+        var node = {node: nodeId, devices: devices};
+        if (devices.length > 0) {
+            nodes.push(node);
+        }
+    });
+    return nodes;
+}
 
 Wire.endsWith = function (str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
+};
+
+/**
+ * Return an array of unique value
+ * @param array
+ * @returns {*}
+ * @private
+ */
+Wire._filter = function (array) {
+    return array.filter(function (elem, pos) {
+        return array.indexOf(elem) == pos;
+    });
 };
 
 module.exports = Wire;

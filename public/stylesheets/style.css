@@ -9,3 +9,21 @@ md-content {
     line-height: 1.5;
     color: #cfd2da;
 }
+
+md-card > img, md-card > span > img {
+    padding: 20px;
+    width: 75px;
+    margin: 0 auto;
+}
+
+md-card > md-card-content {
+    margin: 0 auto;
+}
+
+md-card > span > span {
+    margin: 0 auto;
+}
+
+md-card {
+    padding: 5px;
+}

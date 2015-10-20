@@ -7,62 +7,72 @@ div(ng-cloak)
             md-tab(label="actuators")
                 md-content.md-padding
                     h1.md-display-2 Actuators
-                       div(layout="row" layout-wrap ng-repeat="room in mergeActuatorDevices")
-                           .md-title {{ room.name }}
-                           div.md-body-1(style="padding: 20px; width: 75px;" ng-repeat="device in room.devices")
-                                   p {{ device.name }}
-                                   span(ng-if="device.typeImg == 'door'")
-                                       span(ng-if="device.open")
-                                           switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
-                                       span(ng-if="!device.open")
-                                           switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.open")
-
-                                   span(ng-if="device.typeImg == 'lightbulb'")
-                                       span(ng-if="device.protected")
-                                           switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.status")
-                                       span(ng-if="!device.protected")
-                                           switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
-
-                                   span(ng-if="device.typeImg == 'motion'")
-                                       span(ng-if="device.data")
-                                           img(src="/img/motion_on.png" alt="motion_on" title="Motion" width="35px")
-                                       span(ng-if="!device.data")
-                                           img(src="/img/motion_off.png" alt="motion_off" title="No motion" width="35px")
-
-                                   span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
-                                       switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
+                       div(layout="row" ng-repeat="node in actuatorsByNode")
+                           .md-title(flex="5") {{ node.node }}
+                           div.md-body-1(layout="row" ng-repeat="device in node.devices")
+                               md-card
+                                   //switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
+                                   //span(ng-if="device.typeImg == 'lightbulb'")
+                                   //    span(ng-if="device.protected")
+                                   //        switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.status")
+                                   //    span(ng-if="!device.protected")
+                                   //        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
+                                   //span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
+                                   //    switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
+                                   .md-subhead {{ device.name }}
                                    small(ng-if="advancedSettings") {{device.lastUpdate}}
             md-tab(label="sensors")
                 md-content.md-padding
                     h1.md-display-2 Sensors
                         div(layout="row" ng-repeat="room in mergeSensorDevices")
                             .md-title(flex="5") {{ room.name }}
-                            div(layout="row" ng-repeat="device in room.devices")
-                                div.md-body-1(ng-repeat="value in device.data")
+                            div.md-body-1(layout="row" ng-repeat="device in room.devices")
+                                div(ng-repeat="value in device.data track by $index")
                                     md-card(ng-if="value.unity == 'C'")
-                                        img(src="/img/temperature.png" alt="temperature" style="padding: 20px; width: 75px;")
+                                        img(src="/img/temperature.png" alt="temperature" title="Update : {{device.lastUpdate}}")
                                         md-card-content
                                             span {{ value.value }} {{ value.unity }}
+                                            p.md-caption(ng-if="advancedSettings") {{device.lastUpdate}}
                                     md-card(ng-if="value.unity == '%'")
-                                        img(src="/img/humidity.png" alt="humidity" style="padding: 20px; width: 75px;")
+                                        img(src="/img/humidity.png" alt="humidity" title="Update : {{device.lastUpdate}}")
                                         md-card-content
                                             span {{ value.value }} {{ value.unity }}
+                                            p.md-caption(ng-if="advancedSettings") {{device.lastUpdate}}
                                     md-card(ng-if="value.unity == 'hPa'")
-                                        img(src="/img/pressure.png" alt="pressure" style="padding: 20px; width: 75px;")
+                                        img(src="/img/pressure.png" alt="pressure" title="Update : {{device.lastUpdate}}")
                                         md-card-content
                                             span {{ value.value }} {{ value.unity }}
+                                            p.md-caption(ng-if="advancedSettings") {{device.lastUpdate}}
                                     md-card(ng-if="value.unity == 'ppm'")
-                                        img(src="/img/co2.png" alt="co2" style="padding: 20px; width: 75px;")
+                                        img(src="/img/co2.png" alt="co2" title="Update : {{device.lastUpdate}}")
                                         md-card-content
                                             span {{ value.value }} {{ value.unity }}
+                                            p.md-caption(ng-if="advancedSettings") {{device.lastUpdate}}
                                     md-card(ng-if="value.unity == 'lx'")
-                                        img(src="/img/light_on.png" alt="lux" style="padding: 20px; width: 75px;")
+                                        img(src="/img/light_on.png" alt="lux" title="Update : {{device.lastUpdate}}")
                                         md-card-content
                                             span {{ value.value }} {{ value.unity }}
+                                            p.md-caption(ng-if="advancedSettings") {{device.lastUpdate}}
                                     md-card(ng-if="value.unity == 'dB'")
-                                        img(src="/img/speaker_off.png" alt="sound" style="padding: 20px; width: 75px;")
+                                        img(src="/img/speaker_off.png" alt="sound" title="Update : {{device.lastUpdate}}")
                                         md-card-content
                                             span {{ value.value }} {{ value.unity }}
+                                            p.md-caption(ng-if="advancedSettings") {{device.lastUpdate}}
+                                md-card(ng-if="device.switchType == 'Motion Sensor' && device.subType == 'X10'")
+                                    span(ng-if="device.data")
+                                        img(src="/img/motion_on.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
+                                    span(ng-if="!device.data")
+                                        img(src="/img/motion_off.png" alt="motion_off" title="Update : {{device.lastUpdate}}")
+                                    md-card-content
+                                        span Recent motion
+                                        p.md-caption(ng-if="advancedSettings") {{device.lastUpdate}}
+                                md-card(ng-if="device.typeImg == 'door'")
+                                    span(ng-if="device.open")
+                                        img(src="/img/front_door_opened.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
+                                    span(ng-if="!device.open")
+                                        img(src="/img/front_door_closed.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
+                                    md-card-content
+                                        span {{device.name}}
 
             md-tab(label="general")
                 md-content.md-padding
