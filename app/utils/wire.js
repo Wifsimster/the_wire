@@ -85,7 +85,7 @@ Wire.prototype.getOpenZWaveDevicesByNode = function () {
     nodeIds.forEach(function (nodeId) {
         var devices = [];
         self._getDevices().forEach(function (device) {
-            if (device.subType === "ZWave") {
+            if (device.hardwareName === "OpenZWave") {
                 if (device.id.toString().startsWith(nodeId.toString())) {
                     devices.push(device);
                 }

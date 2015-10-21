@@ -11,6 +11,11 @@ function Device(_object) {
     this.xOffset = _object.XOffset;
     this.yOffset = _object.YOffset;
     this.idx = _object.idx;
+    this.hardwareId = _object.HardwareID;
+    this.hardwareName = _object.HardwareName;
+    this.hardwareType = _object.HardwareType;
+    this.hardwareTypeVal = _object.HardwareTypeVal;
+    this.id = _object.ID;
     this.data = _object.Data;
 
     if (this.name.split(' - ').length > 1) {

@@ -15,14 +15,9 @@ function Lightbulb(_object) {
     this.addjValue2 = _object.AddjValue2;
     this.batteryLevel = _object.BatteryLevel;
     this.customImage = _object.CustomImage;
-    this.hardwareId = _object.HardwareID;
-    this.hardwareName = _object.HardwareName;
-    this.hardwareType = _object.HardwareType;
-    this.hardwareTypeVal = _object.HardwareTypeVal;
     this.haveDimmer = _object.HaveDimmer;
     this.haveGroupCmd = _object.HaveGroupCmd;
     this.haveTimeout = _object.HaveTimeout;
-    this.id = _object.ID;
     this.image = _object.Image;
     this.isSubDevice = _object.IsSubDevice;
     this.maxDimLevel = _object.MaxDimLevel;

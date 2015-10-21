@@ -10,7 +10,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
             if (_.isObject(data)) {
                 if (data.status === 200) {
                     $scope.actuatorsByNode = data.data;
-
                     console.log(data.data);
                 }
             }
@@ -59,8 +58,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
                     $scope.mergeSensorDevices = mergeSensorDevices;
                     $scope.mergeActuatorDevices = mergeActuatorDevices;
                     $scope.mergeGeneralDevices = mergeGeneralDevices;
-
-                    console.log(mergeSensorDevices)
 
                     //$scope.general = _.sortBy(general, 'room');
                     //$scope.actuators = _.sortBy(actuators, 'room');
