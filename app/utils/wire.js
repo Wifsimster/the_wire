@@ -8,6 +8,7 @@ var AirQuality = require('../models/temperature/air_quality.js');
 var Lux = require('../models/temperature/lux.js');
 var SoundLevel = require('../models/temperature/sound_level.js');
 var Temperature = require('../models/temperature/temperature.js');
+var util = require('util');
 
 function Wire(data) {
     var self = this;
@@ -17,6 +18,7 @@ function Wire(data) {
 
     // Each Domoticz devices
     data.result.forEach(function (deviceData) {
+
         // General devices
         if (deviceData.TypeImg === "current") {
             self.generals.push(new Current(deviceData));
@@ -64,43 +66,65 @@ Wire.prototype._getDevices = function () {
 };
 
 /**
- * Return an array of nodeIDs for OpenZWave device
+ * Return an array of unique nodeIDs for OpenZWave devices
  */
-Wire.prototype.getNodeIDs = function () {
+Wire.prototype._getNodeIDs = function (devices) {
     var nodeIds = [];
-    var devices = this._getDevices();
     devices.forEach(function (device) {
         if (device.subType === "ZWave") {
             nodeIds.push(device.id.substring(0, 5));
         }
     });
+    //console.log(Wire._filter(nodeIds));
     return Wire._filter(nodeIds);
 };
 
-Wire.prototype.getOpenZWaveDevicesByNode = function () {
-    var self = this;
-    var nodeIds = this.getNodeIDs();
-    var nodes = [];
+Wire.prototype._getNodeDevices = function (nodeIds, nodeId) {
+    var devices = this._getDevices();
 
-    nodeIds.forEach(function (nodeId) {
-        var devices = [];
-        self._getDevices().forEach(function (device) {
-            if (device.hardwareName === "OpenZWave") {
-                if (device.id.toString().startsWith(nodeId.toString())) {
-                    devices.push(device);
+    // Prepare a node object
+    var _node = {nodeId: nodeId, data: [], batteryLevel: 0};
+
+    devices.forEach(function (device) {
+        // Found devices from same node id
+        if (device.id.toString().startsWith(nodeId.toString())) {
+            nodeIds.forEach(function (_nodeId) {
+                if (_nodeId === nodeId) {
+
+                    device.type ? _node.type = device.type : this;
+                    device.room ? _node.type = device.room : this;
+                    device.lastUpdate ? _node.lastUpdate = device.lastUpdate : this;
+                    device.batteryLevel ? _node.batteryLevel = device.batteryLevel : this;
+
+                    if (util.isArray(device.data)) {
+                        device.data.forEach(function (data) {
+                            _node.data.push({idx: device.idx, name: device.name, data: data});
+                        })
+                    } else {
+                        _node.data.push({idx: device.idx, name: device.name, data: device.data});
+                    }
                 }
-            }
-        });
-        var node = {node: nodeId, devices: devices};
-        if (devices.length > 0) {
-            nodes.push(node);
+            });
         }
     });
-    return nodes;
-}
+    return _node;
+};
+
+Wire.prototype.getOpenZWaveDevices = function () {
+    var self = this;
+    var devices = this._getDevices();
+    var nodeIds = this._getNodeIDs(devices);
+    var openZWaveDevices = [];
+
+    nodeIds.forEach(function (nodeId) {
+        openZWaveDevices.push(self._getNodeDevices(nodeIds, nodeId));
+    });
+
+    return openZWaveDevices;
+};
 
 Wire.endsWith = function (str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    return str.toString().indexOf(suffix, str.toString().length - suffix.length) !== -1;
 };
 
 /**

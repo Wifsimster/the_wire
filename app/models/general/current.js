@@ -11,16 +11,16 @@ function Current(_object) {
     // If device data end with 'kWh'
     if (Wire.endsWith(this.data, 'kWh')) {
         this.unity = "kWh";
-        this.value = parseInt(this.data.substring(0, this.data.length - 3));
-        this.data = [this.value, MAX_KWH - this.value]
+        this.data = {value: parseInt(this.data.substring(0, this.data.length - 3)), unity: this.unity};
+        this.values = [this.value, MAX_KWH - this.data]
         this.labels = [this.name, this.unity];
     }
 
     // If device data end with 'Watt'
     if (Wire.endsWith(this.data, 'Watt')) {
         this.unity = "W";
-        this.value = parseInt(this.data.substring(0, this.data.length - 4));
-        this.data = [this.value, MAX_WATT - this.value]
+        this.data = {value: parseInt(this.data.substring(0, this.data.length - 4)), unity: this.unity};
+        this.values = [this.value, MAX_WATT - this.data]
         this.labels = [this.name, this.unity];
     }
 }

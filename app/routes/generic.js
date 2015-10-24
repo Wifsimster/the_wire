@@ -50,7 +50,7 @@ app.get('/complete/actuators', function (req, res) {
         function (error, response, body) {
             var result = JSON.parse(body);
             var wire = new Wire(result);
-            res.json(wire.getOpenZWaveDevicesByNode());
+            res.json(wire.getOpenZWaveDevices());
         });
 });
 

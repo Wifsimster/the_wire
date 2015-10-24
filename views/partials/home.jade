@@ -8,9 +8,9 @@ div(ng-cloak)
                 md-content.md-padding
                     h1.md-display-2 Actuators
                        div(layout="row" ng-repeat="node in actuatorsByNode")
-                            .md-title(flex="5") {{ node.node }}
-                                div.md-body-1(layout="row" ng-repeat="device in node.devices")
-                                    md-card
+                            .md-title(flex="5") {{ node.nodeId }}
+                                md-card
+                                    div.md-body-1(layout="row" ng-repeat="device in node.data")
                                         p {{ device.name }} - {{ device.id }} - {{ device.data }}
                                         switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
                                             span(ng-if="device.typeImg == 'lightbulb'")
@@ -20,8 +20,8 @@ div(ng-cloak)
                                                    switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
                                             span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
                                                switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
-                                   .md-subhead {{ device.name }}
-                                   small(ng-if="advancedSettings") {{device.lastUpdate}}
+                                    .md-subhead {{ device.name }}
+                                    small(ng-if="advancedSettings") {{device.lastUpdate}}
             md-tab(label="sensors")
                 md-content.md-padding
                     h1.md-display-2 Sensors
