@@ -50,7 +50,15 @@ app.get('/complete/actuators', function (req, res) {
         function (error, response, body) {
             var result = JSON.parse(body);
             var wire = new Wire(result);
-            res.json(wire.getOpenZWaveDevices());
+            var openZWaveActuatorDevices = wire.getOpenZWaveActuatorsDevices();
+            var otherActuatorDevices = wire.getOtherActuatorDevices();
+            otherActuatorDevices.forEach(function(actuatorDevices) {
+                openZWaveActuatorDevices.push({nodeId: actuatorDevices.id, room: actuatorDevices.room,
+                    type: "Switch", idx: actuatorDevices.idx, camera: actuatorDevices.name === "Camera" ? true : false,
+                    name: actuatorDevices.name, batteryLevel: 255, lastUpdate: actuatorDevices.lastUpdate,
+                    devices: [{data: actuatorDevices.data}]});
+            });
+            res.json(openZWaveActuatorDevices);
         });
 });
 

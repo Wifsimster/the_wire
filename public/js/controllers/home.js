@@ -4,48 +4,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
     $rootScope.types = Types();
     $rootScope.advancedSettings = false;
 
-    $scope.isMotionSensor = function (nodeId) {
-        if (nodeId === "00004" || nodeId === "00005" || nodeId === "00006") {
-            return true;
-        }
-        return false;
-    }
-
-    $scope.isPowerNode = function (nodeId) {
-        if (nodeId === "00007" || nodeId === "0000C") {
-            return true;
-        }
-        return false;
-    }
-
-    $scope.isDoorSensor = function (nodeId) {
-        if (nodeId === "00009" || nodeId === "0000A") {
-            return true;
-        }
-        return false;
-    }
-
-    $scope.isWallPlug = function (nodeId) {
-        if (nodeId === "0000B") {
-            return true;
-        }
-        return false;
-    }
-
-    $scope.isLuminosity = function (unity) {
-        if (unity && unity === "lx") {
-            return true;
-        }
-        return false;
-    }
-
-    $scope.isCounter = function (unity) {
-        if (unity && (unity === "kWh" || unity === "W")) {
-            return true;
-        }
-        return false;
-    }
-
     $scope.getDevices = function () {
 
         $http.get("/complete/actuators").then(function (data) {
@@ -58,7 +16,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
         });
 
         $http.get("/devices").then(function (data) {
-
             if (_.isObject(data)) {
                 if (data.status === 200) {
                     var sensors = data.data.sensors;
@@ -110,10 +67,24 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
 
                     $scope.change = function (idx) {
                         $http.get("/toggle/" + idx).then(function (data) {
-                            $scope.parseData();
+                            console.log("Change '" + idx + "' state !");
+                            $scope.getDevices();
                             // TODO : Add a toast to notify change
                             $mdToast.show($mdToast.simple().content("Action send !").position("bottom right"));
                         });
+                    };
+
+                    $scope.changeNode = function (devices) {
+                        _.each(devices, function (device) {
+                            if (device.data === false || device.data === true) {
+                                $http.get("/toggle/" + device.idx).then(function (data) {
+                                    console.log("Change '" + idx + "' state !");
+                                    $scope.getDevices();
+                                    // TODO : Add a toast to notify change
+                                    $mdToast.show($mdToast.simple().content("Action send !").position("bottom right"));
+                                });
+                            }
+                        })
                     };
                 }
             }
@@ -125,11 +96,42 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
     // Function to replicate setInterval using $timeout service.
     $scope.intervalFunction = function () {
         $timeout(function () {
-            $scope.parseData();
+            //$scope.getDevices();
             $scope.intervalFunction();
         }, 15000)
     };
 
     // Kick off the interval
     //$scope.intervalFunction();
+
+    $scope.isPowerNode = function (nodeId) {
+        if (nodeId === "00007" || nodeId === "0000C") {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.powerNodeState = function (node) {
+        var state = false;
+        _.each(node.devices, function (device) {
+            if (device.data === true) {
+                state = true;
+            }
+        });
+        return state;
+    }
+
+    $scope.isWallPlug = function (nodeId) {
+        if (nodeId === "0000B") {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.isCounter = function (unity) {
+        if (unity && (unity === "kWh" || unity === "W")) {
+            return true;
+        }
+        return false;
+    }
 });

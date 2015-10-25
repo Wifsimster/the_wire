@@ -110,17 +110,41 @@ Wire.prototype._getNodeDevices = function (nodeIds, nodeId) {
     return _node;
 };
 
+/**
+ * Return an array of switch On/Off devices non ZWave
+ * @returns {Array}
+ */
+Wire.prototype.getOtherActuatorDevices = function () {
+    var otherActuatorDevices = [];
+    var devices = this._getDevices();
+    devices.forEach(function (device) {
+        if (device.switchType === "On/Off" && device.subType != "ZWave" && device.room != "Etat" && device.room != "EDF") {
+            otherActuatorDevices.push(device);
+        }
+    });
+    return otherActuatorDevices;
+}
+
 Wire.prototype.getOpenZWaveDevices = function () {
     var self = this;
     var devices = this._getDevices();
     var nodeIds = this._getNodeIDs(devices);
     var openZWaveDevices = [];
-
     nodeIds.forEach(function (nodeId) {
         openZWaveDevices.push(self._getNodeDevices(nodeIds, nodeId));
     });
-
     return openZWaveDevices;
+};
+
+Wire.prototype.getOpenZWaveActuatorsDevices = function () {
+    var openZWaveDevices = this.getOpenZWaveDevices();
+    var openZWaveActuatorDevices = [];
+    openZWaveDevices.forEach(function (node) {
+        if (node.nodeId === "0000C" || node.nodeId === "0000B" || node.nodeId === "00007") {
+            openZWaveActuatorDevices.push(node);
+        }
+    });
+    return openZWaveActuatorDevices;
 };
 
 Wire.endsWith = function (str, suffix) {

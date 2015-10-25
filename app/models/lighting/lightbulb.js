@@ -9,6 +9,8 @@ function Lightbulb(_object) {
     this.data === "Off" ? this.data = false : this.data;
     this.data === "Off, Level: 255 %" ? this.data = false : this.data;
     this.data === "On, Level: 255 %" ? this.data = true : this.data;
+    this.data === "Off, Level: 100 %" ? this.data = false : this.data;
+    this.data === "On, Level: 100 %" ? this.data = true : this.data;
 
     this.addjMulti = _object.AddjMulti;
     this.addjMulti2 = _object.AddjMulti2;
