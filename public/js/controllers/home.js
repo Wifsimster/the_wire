@@ -4,6 +4,48 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
     $rootScope.types = Types();
     $rootScope.advancedSettings = false;
 
+    $scope.isMotionSensor = function (nodeId) {
+        if (nodeId === "00004" || nodeId === "00005" || nodeId === "00006") {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.isPowerNode = function (nodeId) {
+        if (nodeId === "00007" || nodeId === "0000C") {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.isDoorSensor = function (nodeId) {
+        if (nodeId === "00009" || nodeId === "0000A") {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.isWallPlug = function (nodeId) {
+        if (nodeId === "0000B") {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.isLuminosity = function (unity) {
+        if (unity && unity === "lx") {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.isCounter = function (unity) {
+        if (unity && (unity === "kWh" || unity === "W")) {
+            return true;
+        }
+        return false;
+    }
+
     $scope.getDevices = function () {
 
         $http.get("/complete/actuators").then(function (data) {

@@ -5,23 +5,69 @@ div(ng-cloak)
             switch(id="advancedSettings" name="advancedSettings" ng-model="advancedSettings")
         md-tabs(md-dynamic-height, md-center-tabs, md-swipe-content)
             md-tab(label="actuators")
-                md-content.md-padding
-                    h1.md-display-2 Actuators
-                       div(layout="row" ng-repeat="node in actuatorsByNode")
-                            .md-title(flex="5") {{ node.nodeId }}
-                                md-card
-                                    div.md-body-1(layout="row" ng-repeat="device in node.data")
-                                        p {{ device.name }} - {{ device.id }} - {{ device.data }}
-                                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
-                                            span(ng-if="device.typeImg == 'lightbulb'")
-                                               span(ng-if="device.protected")
-                                                   switch(id="{{device.idx}}" disabled="true" name="{{device.name}}" ng-model="device.status")
-                                               span(ng-if="!device.protected")
-                                                   switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
-                                            span(ng-if="device.typeImg != 'door' && device.typeImg != 'lightbulb' && device.typeImg != 'motion'")
-                                               switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.status")
-                                    .md-subhead {{ device.name }}
-                                    small(ng-if="advancedSettings") {{device.lastUpdate}}
+                h1.md-display-2 Actuators
+                md-content.md-padding(layout="row" layout-wrap)
+                    div(flex="10" ng-repeat="node in actuatorsByNode | orderBy:'room'")
+                        div(ng-if="isMotionSensor(node.nodeId)")
+                            md-card(layout="row" layout-wrap)
+                                .md-subhead {{node.room}} - {{node.devices[0].name}}
+                                .md-body-1(ng-if="advancedSettings") Battery : {{ node.batteryLevel }} %
+                                .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
+                                div(flex="50" ng-repeat="device in node.devices")
+                                    div(ng-if="device.name === 'Motion Sensor'")
+                                        div(ng-if="device.data === false")
+                                            img(src="/img/motion_off.png" style='width:60px')
+                                        div(ng-if="device.data === true")
+                                            img(src="/img/motion_on.png" style='width:60px')
+                                    div(ng-if="device.name === 'Luminosity'")
+                                        img(src="/img/light_on.png" style="width:60px")
+                                        span.md-headline {{ device.data.value }} {{ device.data.unity }}
+                                    div(ng-if="device.name === 'Motion Sensor Alarm'")
+                                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
+                                        span.md-headline Alarm
+
+                        div(ng-if="isWallPlug(node.nodeId)")
+                            md-card(layout="row" layout-wrap)
+                                .md-subhead {{node.room}} - {{node.devices[0].name}}
+                                .md-body-1(ng-if="advancedSettings") Battery : {{ node.batteryLevel }} %
+                                .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
+                                div(flex="50" ng-repeat="device in node.devices")
+                                    div(ng-if="device.data === false")
+                                        img(src="/img/washing_machine_off.png" style='width:60px')
+                                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
+                                    div(ng-if="device.data === true")
+                                        img(src="/img/washing_machine_on.png" style='width:60px')
+                                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
+                                    div(ng-if="isCounter(device.data.unity)")
+                                        p.md-headline {{ device.data.value }} {{ device.data.unity }}
+
+                        div(ng-if="isDoorSensor(node.nodeId)")
+                            md-card(layout="row" layout-wrap)
+                                .md-subhead {{node.room}} - {{node.devices[0].name}}
+                                .md-body-1(ng-if="advancedSettings") Battery : {{ node.batteryLevel }} %
+                                .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
+                                div(flex="50" ng-repeat="device in node.devices")
+                                    div(ng-if="device.data === 'Closed'")
+                                        img(src="/img/door_closed.png" style='width:60px')
+                                    div(ng-if="device.data === 'Opened'")
+                                        img(src="/img/door_opened.png" style='width:60px')
+                                    div(ng-if="isLuminosity(device.data.unity)")
+                                        img(src="/img/light_on.png" style="width:60px")
+                                        span.md-headline {{ device.data.value }} {{ device.data.unity }}
+
+                        div(ng-if="isPowerNode(node.nodeId)")
+                            md-card(layout="row" layout-wrap)
+                                .md-subhead {{node.room}} - {{node.devices[0].name}}
+                                .md-body-1(ng-if="advancedSettings") Battery : {{ node.batteryLevel }} %
+                                .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
+                                img(src="/img/greenwave.png")
+                                div(flex="50" ng-repeat="device in node.devices | orderBy:'name'")
+                                    .md-body-1 {{device.name}}
+                                    div(ng-if="device.data === true || device.data === false")
+                                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
+                                    div(ng-if="isCounter(device.data.unity)")
+                                        span.md-headline {{device.data.value}} {{device.data.unity}}
+
             md-tab(label="sensors")
                 md-content.md-padding
                     h1.md-display-2 Sensors

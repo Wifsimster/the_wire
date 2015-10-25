@@ -19,8 +19,8 @@ function Device(_object) {
     this.data = _object.Data;
 
     if (this.name.split(' - ').length > 1) {
-        this.room = this.name.split(' - ')[0];
-        this.name = this.name.substring(this.room.length + 2);
+        this.room = this.name.split(' - ')[0].trim();
+        this.name = this.name.substring(this.room.length + 2).trim();
     }
 };
 

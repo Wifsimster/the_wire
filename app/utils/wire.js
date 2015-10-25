@@ -83,7 +83,7 @@ Wire.prototype._getNodeDevices = function (nodeIds, nodeId) {
     var devices = this._getDevices();
 
     // Prepare a node object
-    var _node = {nodeId: nodeId, data: [], batteryLevel: 0};
+    var _node = {nodeId: nodeId, devices: [], batteryLevel: 0};
 
     devices.forEach(function (device) {
         // Found devices from same node id
@@ -92,16 +92,16 @@ Wire.prototype._getNodeDevices = function (nodeIds, nodeId) {
                 if (_nodeId === nodeId) {
 
                     device.type ? _node.type = device.type : this;
-                    device.room ? _node.type = device.room : this;
+                    device.room ? _node.room = device.room : this;
                     device.lastUpdate ? _node.lastUpdate = device.lastUpdate : this;
                     device.batteryLevel ? _node.batteryLevel = device.batteryLevel : this;
 
                     if (util.isArray(device.data)) {
                         device.data.forEach(function (data) {
-                            _node.data.push({idx: device.idx, name: device.name, data: data});
+                            _node.devices.push({idx: device.idx, name: device.name, data: data});
                         })
                     } else {
-                        _node.data.push({idx: device.idx, name: device.name, data: device.data});
+                        _node.devices.push({idx: device.idx, name: device.name, data: device.data});
                     }
                 }
             });
