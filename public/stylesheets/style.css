@@ -27,3 +27,11 @@ md-card > span > span {
 md-card {
     padding: 5px;
 }
+
+md-card md-card-content {
+    padding: 5px;
+}
+
+md-card.battery_low {
+    background-color: darkred;
+}

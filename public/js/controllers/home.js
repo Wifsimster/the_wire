@@ -10,6 +10,15 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
             if (_.isObject(data)) {
                 if (data.status === 200) {
                     $scope.actuatorsByNode = data.data;
+
+                    _.each($scope.actuatorsByNode, function (node) {
+                        if ($scope.nodeType(node) === "powerNode") {
+                            node.row = 2;
+                        } else {
+                            node.row = 1;
+                        }
+                        node.col = 1;
+                    })
                 }
             }
         });
@@ -41,8 +50,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
                     }), function (grouped) {
                         return grouped[0];
                     });
-
-                    console.log(mergeSensorDevices);
 
                     // Expose arrays to $scope
                     $scope.mergeSensorDevices = mergeSensorDevices;
@@ -93,11 +100,16 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
     // Kick off the interval
     //$scope.intervalFunction();
 
-    $scope.isPowerNode = function (nodeId) {
-        if (nodeId === "00007" || nodeId === "0000C") {
-            return true;
+    $scope.nodeType = function (node) {
+        if (node.nodeId === "00007" || node.nodeId === "0000C") {
+            return "powerNode";
         }
-        return false;
+        if (node.nodeId === "0000B") {
+            return "wallPlug";
+        }
+        if (node.type === "Switch") {
+            return "switch";
+        }
     }
 
     $scope.powerNodeState = function (node) {
@@ -108,13 +120,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
             }
         });
         return state;
-    }
-
-    $scope.isWallPlug = function (nodeId) {
-        if (nodeId === "0000B") {
-            return true;
-        }
-        return false;
     }
 
     $scope.isCounter = function (unity) {

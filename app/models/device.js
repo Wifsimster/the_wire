@@ -49,6 +49,8 @@ function Device(_object) {
         this.room = this.name.split(' - ')[0].trim();
         this.name = this.name.substring(this.room.length + 2).trim();
     }
+
+    this.batteryLevel === 255 ? this.batteryLevel = 100 : this;
 };
 
 Device.prototype.toString = function () {
