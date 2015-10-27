@@ -35,3 +35,23 @@ md-card md-card-content {
 md-card.battery_low {
     background-color: darkred;
 }
+
+md-grid-tile-content {
+    display: block;
+    padding-top: 25px;
+}
+
+md-grid-tile-footer figcaption, md-grid-tile-header figcaption {
+    margin: 0;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+}
+
+md-grid-tile-header h3 {
+    font-size: 16px !important;
+}
+
+md-grid-tile-header h3 {
+    font-size: 16px !important;
+}

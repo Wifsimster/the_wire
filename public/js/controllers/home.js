@@ -112,6 +112,14 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
         }
     }
 
+    $scope.isCamera = function (node) {
+        console.log(node)
+        if (node.idx === "26") {
+            return true;
+        }
+        return false;
+    }
+
     $scope.powerNodeState = function (node) {
         var state = false;
         _.each(node.devices, function (device) {

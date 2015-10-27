@@ -5,11 +5,11 @@ div(ng-cloak)
             switch(id="advancedSettings" name="advancedSettings" ng-model="advancedSettings")
         md-tabs(md-dynamic-height, md-center-tabs, md-swipe-content)
             md-tab(label="actuators")
-                //md-content(layout-padding layout-wrap)
+                //md-content(layout-padding)
                 md-grid-list(
-                md-cols-gt-lg="8" md-cols-gt-md="4" md-cols-md="2" md-cols-sm="1"
+                md-cols-gt-lg="6" md-cols-gt-md="4" md-cols-md="2" md-cols-sm="1"
                 md-row-height="1:1"
-                md-gutter="8px" md-gutter-gt-sm="4px" )
+                md-gutter="12px" md-gutter-gt-sm="4px" )
                     md-grid-tile(ng-repeat="node in actuatorsByNode | orderBy:['devices[0].name']" ng-switch="nodeType(node)"
                     md-rowspan="{{node.row}}"
                     md-colspan="{{node.col}}"
@@ -18,38 +18,45 @@ div(ng-cloak)
                         div(ng-switch-when="powerNode")
                             md-grid-tile-header
                                 h3 {{node.room}}
-                            .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
-                            img(ng-show="powerNodeState(node)" src="/img/greenwave_on.png" style='width:128px; cursor:pointer;' ng-click="changeNode(node.devices)")
-                            img(ng-hide="powerNodeState(node)" src="/img/greenwave_off.png" style='width:128px; cursor:pointer;' ng-click="changeNode(node.devices)")
-                            div(layout="row" layout-align="center center" layout-wrap)
-                                div(flex="50" ng-repeat="device in node.devices | orderBy:['name', 'data']")
-                                    div(ng-if="device.data === true || device.data === false")
-                                        .md-body-1 {{device.name}}
-                                        switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
-                                    div(ng-if="isCounter(device.data.unity)" style="padding-top: 20px;")
-                                        span.md-headline {{device.data.value}} {{device.data.unity}}
+                            md-grid-tile-content
+                                .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
+                                img(ng-show="powerNodeState(node)" src="/img/greenwave_on.png" style='width:128px; cursor:pointer;' ng-click="changeNode(node.devices)")
+                                img(ng-hide="powerNodeState(node)" src="/img/greenwave_off.png" style='width:128px; cursor:pointer;' ng-click="changeNode(node.devices)")
+                                div(layout="row" layout-align="center center" layout-wrap)
+                                    div(flex="50" ng-repeat="device in node.devices | orderBy:['name', 'data']")
+                                        div(ng-if="device.data === true || device.data === false")
+                                            .md-body-1 {{device.name}}
+                                            switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
+                                        div(ng-if="isCounter(device.data.unity)" style="padding-top: 20px;")
+                                            span.md-headline {{device.data.value}} {{device.data.unity}}
                         div(ng-switch-when="wallPlug")
                             md-grid-tile-header
                                 h3 {{node.room}} - {{node.devices[0].name}}
-                            .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
-                            div(flex="50" ng-repeat="device in node.devices")
-                                div(ng-if="device.data === false")
-                                    img(src="/img/washing_machine_off.png" style='width:75px; cursor:pointer;' ng-click="change(device.idx)")
-                                div(ng-if="device.data === true")
-                                    img(src="/img/washing_machine_on.png" style='width:75px; cursor:pointer;' ng-click="change(device.idx)")
-                                div(ng-if="isCounter(device.data.unity)")
-                                    p.md-headline {{ device.data.value }} {{ device.data.unity }}
+                                small(ng-if="advancedSettings") {{node.lastUpdate}}
+                            md-grid-tile-content
+                                div(ng-if="node.devices[0].data === false")
+                                    img(src="/img/washing_machine_off.png" style='width:75px; cursor:pointer;' ng-click="change(node.devices[0].idx)")
+                                div(ng-if="node.devices[0].data === true")
+                                    img(src="/img/washing_machine_on.png" style='width:75px; cursor:pointer;' ng-click="change(node.devices[0].idx)")
+                            md-grid-tile-footer
+                                p(ng-if="isCounter(node.devices[1].data.unity)") {{ node.devices[1].data.value }} {{ node.devices[1].data.unity }}
                         div(ng-switch-when="switch")
                             md-grid-tile-header
                                 h3 {{node.room}} - {{node.name}}
-                            .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
-                            div(layout="row" layout-wrap ng-repeat="device in node.devices | orderBy:'name'")
-                                div(ng-if="device.data === false")
+                                img(ng-if="node.devices[0].data && node.camera" src="/img/close.png"
+                                ng-click="change(node.idx)"
+                                style="width: 14px; float: right; margin: -18px 10px 0 0; cursor: pointer;")
+                                small(ng-if="advancedSettings") {{node.lastUpdate}}
+                            md-grid-tile-content
+                                div(ng-if="!node.devices[0].data")
                                     img(src="/img/socket_off.png" style="width:48px; cursor:pointer;" ng-click="change(node.idx)")
-                                div(ng-if="device.data === true")
-                                    img(ng-if="node.camera" src="http://192.168.0.31:8081", style="")
+                                div(ng-if="node.devices[0].data && !node.camera")
                                     img(src="/img/socket_on.png" style="width:48px; cursor:pointer;" ng-click="change(node.idx)")
-
+                                div(ng-if="node.devices[0].data && node.camera")
+                                    img(src="http://192.168.0.31:8081", style="width:100%;")
+                            md-grid-tile-footer
+                                p(ng-if="node.devices[0].data === false") Off
+                                p(ng-if="node.devices[0].data === true") On
             md-tab(label="sensors")
                 md-content.md-padding
                     div(layout="row" layout-wrap ng-repeat="room in mergeSensorDevices")
