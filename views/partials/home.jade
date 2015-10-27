@@ -7,9 +7,9 @@ div(ng-cloak)
             md-tab(label="actuators")
                 //md-content(layout-padding)
                 md-grid-list(
-                md-cols-gt-lg="6" md-cols-gt-md="4" md-cols-md="2" md-cols-sm="1"
-                md-row-height="1:1"
-                md-gutter="12px" md-gutter-gt-sm="4px" )
+                md-cols-gt-lg="8" md-cols-lg="10" md-cols-gt-md="8" md-cols-md="4" md-cols-sm="1"
+                md-row-height="2:3"
+                md-gutter-gt-lg="8px" md-gutter-lg="6px" md-gutter-gt-sm="4px" )
                     md-grid-tile(ng-repeat="node in actuatorsByNode | orderBy:['devices[0].name']" ng-switch="nodeType(node)"
                     md-rowspan="{{node.row}}"
                     md-colspan="{{node.col}}"
@@ -18,17 +18,21 @@ div(ng-cloak)
                         div(ng-switch-when="powerNode")
                             md-grid-tile-header
                                 h3 {{node.room}}
+                                small(ng-if="advancedSettings") {{node.lastUpdate}}
                             md-grid-tile-content
-                                .md-body-1(ng-if="advancedSettings") Updated : {{node.lastUpdate}}
-                                img(ng-show="powerNodeState(node)" src="/img/greenwave_on.png" style='width:128px; cursor:pointer;' ng-click="changeNode(node.devices)")
-                                img(ng-hide="powerNodeState(node)" src="/img/greenwave_off.png" style='width:128px; cursor:pointer;' ng-click="changeNode(node.devices)")
+                                img(ng-show="powerNodeState(node)" src="/img/greenwave_on.png"
+                                style='width: 30%; cursor:pointer; display:block; margin: 0 auto;' ng-click="changeNode(node.devices)")
+                                img(ng-hide="powerNodeState(node)" src="/img/greenwave_off.png"
+                                style='width: 70%; cursor:pointer; display:block; margin: 0 auto;' ng-click="changeNode(node.devices)")
                                 div(layout="row" layout-align="center center" layout-wrap)
                                     div(flex="50" ng-repeat="device in node.devices | orderBy:['name', 'data']")
                                         div(ng-if="device.data === true || device.data === false")
-                                            .md-body-1 {{device.name}}
-                                            switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)")
-                                        div(ng-if="isCounter(device.data.unity)" style="padding-top: 20px;")
+                                            switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)" style="top: 5px;display: inline-block;")
+                                            .md-body-1(style="display:inline-block; line-height: 3em; vertical-align: super; padding-left: 5px;") {{device.name}}
+                                        div(ng-if="isCounter(device.data.unity)" style="text-align:right;")
                                             span.md-headline {{device.data.value}} {{device.data.unity}}
+                            md-grid-tile-footer
+                                p(ng-if="") {{ }}
                         div(ng-switch-when="wallPlug")
                             md-grid-tile-header
                                 h3 {{node.room}} - {{node.devices[0].name}}
@@ -53,7 +57,7 @@ div(ng-cloak)
                                 div(ng-if="node.devices[0].data && !node.camera")
                                     img(src="/img/socket_on.png" style="width:48px; cursor:pointer;" ng-click="change(node.idx)")
                                 div(ng-if="node.devices[0].data && node.camera")
-                                    img(src="http://192.168.0.31:8081", style="width:100%;")
+                                    img(src="http://192.168.0.31:8081", style="width:85%; display:block; margin: 0 auto;")
                             md-grid-tile-footer
                                 p(ng-if="node.devices[0].data === false") Off
                                 p(ng-if="node.devices[0].data === true") On

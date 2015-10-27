@@ -14,10 +14,14 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
                     _.each($scope.actuatorsByNode, function (node) {
                         if ($scope.nodeType(node) === "powerNode") {
                             node.row = 2;
+                            node.col = 2;
+                        } else if (node.camera){
+                            node.row = 1;
+                            node.col = 2;
                         } else {
                             node.row = 1;
+                            node.col = 1;
                         }
-                        node.col = 1;
                     })
                 }
             }
@@ -110,14 +114,6 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
         if (node.type === "Switch") {
             return "switch";
         }
-    }
-
-    $scope.isCamera = function (node) {
-        console.log(node)
-        if (node.idx === "26") {
-            return true;
-        }
-        return false;
     }
 
     $scope.powerNodeState = function (node) {
