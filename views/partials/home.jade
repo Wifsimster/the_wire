@@ -30,9 +30,9 @@ div(ng-cloak)
                                             switch(id="{{device.idx}}" name="{{device.name}}" ng-model="device.data" ng-change="change(device.idx)" style="top: 5px;display: inline-block;")
                                             .md-body-1(style="display:inline-block; line-height: 3em; vertical-align: super; padding-left: 5px;") {{device.name}}
                                         div(ng-if="isCounter(device.data.unity)" style="text-align:right;")
-                                            span.md-headline {{device.data.value}} {{device.data.unity}}
+                                            span.md-subhead {{device.data.value}} {{device.data.unity}}
                             md-grid-tile-footer
-                                p(ng-if="") {{ }}
+                                p {{ getCounterSum(node) }} W
                         div(ng-switch-when="wallPlug")
                             md-grid-tile-header
                                 h3 {{node.room}} - {{node.devices[0].name}}
@@ -62,65 +62,78 @@ div(ng-cloak)
                                 p(ng-if="node.devices[0].data === false") Off
                                 p(ng-if="node.devices[0].data === true") On
             md-tab(label="sensors")
-                md-content.md-padding
-                    div(layout="row" layout-wrap ng-repeat="room in mergeSensorDevices")
-                        .md-title(flex="5") {{ room.name }}
-                        div.md-body-1(layout="row" ng-repeat="device in room.devices")
-                            div(ng-repeat="value in device.data track by $index")
-                                md-card(ng-if="value.unity == 'C'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                    img(src="/img/temperature.png" alt="temperature" title="Update : {{device.lastUpdate}}")
-                                    md-card-content
-                                        span.md-headline {{ value.value }} &deg;{{ value.unity }}
+                    div(ng-repeat="room in mergeSensorDevices")
+                        .md-title {{ room.name }}
+                        md-grid-list(
+                        md-cols-gt-lg="12" md-cols-lg="10" md-cols-gt-md="8" md-cols-md="8" md-cols-sm="1"
+                        md-row-height="1:1"
+                        md-gutter-gt-lg="8px" md-gutter-lg="6px" md-gutter-gt-sm="4px")
+                            md-grid-tile(ng-repeat="device in room.devices"
+                            md-rowspan="2"
+                            md-colspan="2"
+                            style="background: rgb(33, 33, 33)")
+                                div(ng-if="device.data.unity == 'C'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        img(src="/img/temperature.png" alt="temperature" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline {{ device.data.value }} &deg;{{ device.data.unity }}
                                         p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
                                         p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
-                                md-card(ng-if="value.unity == '%'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                    img(src="/img/humidity.png" alt="humidity" title="Update : {{device.lastUpdate}}")
-                                    md-card-content
-                                        span.md-headline {{ value.value }} {{ value.unity }}
+                                div(ng-if="device.data.unity == '%'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        img(src="/img/humidity.png" alt="humidity" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline {{ device.data.value }} {{ device.data.unity }}
                                         p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
                                         p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
-                                md-card(ng-if="value.unity == 'hPa'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                    img(src="/img/pressure.png" alt="pressure" title="Update : {{device.lastUpdate}}")
-                                    md-card-content
-                                        span.md-headline {{ value.value }} {{ value.unity }}
+                                div(ng-if="device.data.unity == 'hPa'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        img(src="/img/pressure.png" alt="pressure" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline {{ device.data.value }} {{ device.data.unity }}
                                         p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
                                         p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
-                                md-card(ng-if="value.unity == 'ppm'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                    img(src="/img/co2.png" alt="co2" title="Update : {{device.lastUpdate}}")
-                                    md-card-content
-                                        span.md-headline {{ value.value }} {{ value.unity }}
+                                div(ng-if="device.data.unity == 'ppm'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        img(src="/img/co2.png" alt="co2" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline {{ device.data.value }} {{ device.data.unity }}
                                         p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
                                         p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
-                                md-card(ng-if="value.unity == 'lx'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                    img(src="/img/light_on.png" alt="lux" title="Update : {{device.lastUpdate}}")
-                                    md-card-content
-                                        span.md-headline {{ value.value }} {{ value.unity }}
+                                div(ng-if="device.data.unity == 'lx'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        img(src="/img/light_on.png" alt="lux" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline {{ device.data.value }} {{ device.data.unity }}
                                         p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
                                         p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
-                                md-card(ng-if="value.unity == 'dB'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                    img(src="/img/speaker_off.png" alt="sound" title="Update : {{device.lastUpdate}}")
-                                    md-card-content
-                                        span.md-headline {{ value.value }} {{ value.unity }}
+                                div(ng-if="device.data.unity == 'dB'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        img(src="/img/speaker_off.png" alt="sound" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline {{ device.data.value }} {{ device.data.unity }}
                                         p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
                                         p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
-                            md-card(ng-if="device.switchType == 'Motion Sensor' && device.subType == 'X10'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                span(ng-if="device.data")
-                                    img(src="/img/motion_on.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
-                                span(ng-if="!device.data")
-                                    img(src="/img/motion_off.png" alt="motion_off" title="Update : {{device.lastUpdate}}")
-                                md-card-content
-                                    span.md-headline Recent motion
-                                    p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
-                                    p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
-                            md-card(ng-if="device.typeImg == 'door'" ng-class="{'battery_low' : device.batteryLevel < 10}")
-                                span(ng-if="device.open")
-                                    img(src="/img/front_door_opened.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
-                                span(ng-if="!device.open")
-                                    img(src="/img/front_door_closed.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
-                                md-card-content
-                                    span.md-headline {{device.name}}
-                                    p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
-                                    p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
+                                div(ng-if="device.switchType == 'Motion Sensor' && device.subType == 'X10'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        span(ng-if="device.data")
+                                            img(src="/img/motion_on.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
+                                        span(ng-if="!device.data")
+                                            img(src="/img/motion_off.png" alt="motion_off" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline Motion
+                                        p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
+                                        p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
+                                div(ng-if="device.typeImg == 'door'" ng-class="{'battery_low' : device.batteryLevel < 10}")
+                                    md-grid-tile-content
+                                        span(ng-if="device.open")
+                                            img(src="/img/front_door_opened.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
+                                        span(ng-if="!device.open")
+                                            img(src="/img/front_door_closed.png" alt="motion_on" title="Update : {{device.lastUpdate}}")
+                                    md-grid-tile-footer
+                                        span.md-headline {{device.name}}
+                                        p.md-caption(ng-if="advancedSettings && device.batteryLevel != null") Battery: {{device.batteryLevel}}%
+                                        p.md-caption(ng-if="advancedSettings") Update :{{device.lastUpdate}}
 
             md-tab(label="general")
                 md-content.md-padding

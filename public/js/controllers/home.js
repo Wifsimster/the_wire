@@ -10,12 +10,11 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
             if (_.isObject(data)) {
                 if (data.status === 200) {
                     $scope.actuatorsByNode = data.data;
-
                     _.each($scope.actuatorsByNode, function (node) {
                         if ($scope.nodeType(node) === "powerNode") {
                             node.row = 2;
                             node.col = 2;
-                        } else if (node.camera){
+                        } else if (node.camera) {
                             node.row = 1;
                             node.col = 2;
                         } else {
@@ -27,21 +26,15 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
             }
         });
 
-        $http.get("/devices").then(function (data) {
+        $http.get("/sensors").then(function (data) {
             if (_.isObject(data)) {
                 if (data.status === 200) {
-                    var sensors = data.data.sensors;
-                    var generals = data.data.generals;
-
+                    var sensors = data.data;
                     var sensorRooms = [];
-                    var generalRooms = [];
 
                     // Detect and merge data for duplica name
                     _.each(sensors, function (device) {
                         sensorRooms.push({name: device.room, devices: _.filter(sensors, {room: device.room})});
-                    });
-                    _.each(generals, function (device) {
-                        generalRooms.push({name: device.room, devices: _.filter(generals, {room: device.room})});
                     });
 
                     var mergeSensorDevices = _.map(_.groupBy(sensorRooms, function (device) {
@@ -49,21 +42,12 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
                     }), function (grouped) {
                         return grouped[0];
                     });
-                    var mergeGeneralDevices = _.map(_.groupBy(generalRooms, function (device) {
-                        return device.name;
-                    }), function (grouped) {
-                        return grouped[0];
-                    });
+
+
+                    console.log(mergeSensorDevices)
 
                     // Expose arrays to $scope
                     $scope.mergeSensorDevices = mergeSensorDevices;
-                    $scope.mergeGeneralDevices = mergeGeneralDevices;
-
-                    //$scope.general = _.sortBy(general, 'room');
-                    //$scope.sensors = _.sortBy(sensors, 'room');
-
-                    //// Concat all array in devices
-                    //$scope.devices = _(general).concat(actuators, sensors).value();
 
                     $scope.change = function (idx) {
                         $http.get("/toggle/" + idx).then(function (data) {
@@ -116,6 +100,19 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
         }
     }
 
+    $scope.getCounterSum = function (node) {
+        var sum = 0;
+        _.each(node.devices, function (device) {
+                if (_.isObject(device.data)) {
+                    if ($scope.isCounter(device.data.unity)) {
+                        sum += device.data.value;
+                    }
+                }
+            }
+        )
+        return sum;
+    }
+
     $scope.powerNodeState = function (node) {
         var state = false;
         _.each(node.devices, function (device) {
@@ -132,4 +129,5 @@ app.controller('HomeCtrl', function ($rootScope, $scope, $http, $timeout, $mdToa
         }
         return false;
     }
-});
+})
+;

@@ -16,23 +16,7 @@ md-card > img, md-card > span > img {
     margin: 0 auto;
 }
 
-md-card > md-card-content {
-    margin: 0 auto;
-}
-
-md-card > span > span {
-    margin: 0 auto;
-}
-
-md-card {
-    padding: 5px;
-}
-
-md-card md-card-content {
-    padding: 5px;
-}
-
-md-card.battery_low {
+md-grid-tile.battery_low {
     background-color: darkred;
 }
 
@@ -45,6 +29,10 @@ md-grid-tile-footer figcaption, md-grid-tile-header figcaption {
 
 md-grid-tile-content > div {
     padding: 10px;
+}
+
+md-grid-tile-content > img {
+    max-width: 75px;
 }
 
 md-grid-tile-header h3 {

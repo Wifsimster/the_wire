@@ -36,12 +36,12 @@ app.get('/', function (req, res) {
 //------------------------------------------
 //----              REST               ----
 //------------------------------------------
-app.get('/devices', function (req, res) {
+app.get('/sensors', function (req, res) {
     request('http://' + ip + ":" + port + "/json.htm?type=devices&filter=all&used=true&order=Name", {},
         function (error, response, body) {
             var result = JSON.parse(body);
             var wire = new Wire(result);
-            res.json(wire.getDevices(result));
+            res.json(wire.getSensors(result));
         });
 });
 

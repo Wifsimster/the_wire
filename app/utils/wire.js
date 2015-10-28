@@ -61,6 +61,25 @@ Wire.prototype.getDevices = function () {
     return {sensors: this.sensors, actuators: this.actuators, generals: this.generals};
 };
 
+Wire.prototype.getSensors = function () {
+    var result = [];
+    this.sensors.forEach(function (sensor) {
+        if (sensor.idx != "43" && sensor.idx != "32" && sensor.idx != "38") {
+            if (util.isArray(sensor.data)) {
+                sensor.data.forEach(function (data) {
+                    var newSensor = JSON.parse(JSON.stringify(sensor));
+                    delete newSensor.data;
+                    newSensor.data = data;
+                    result.push(newSensor);
+                })
+            } else {
+                result.push(sensor)
+            }
+        }
+    });
+    return result;
+};
+
 Wire.prototype._getDevices = function () {
     return this.sensors.concat(this.actuators.concat(this.generals));
 };
